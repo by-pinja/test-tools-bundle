@@ -1,0 +1,18 @@
+imports:
+    - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/psr2.yml' }
+    - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/php71.yml' }
+    - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/clean-code.yml' }
+    - { resource: '%vendor_dir%/symplify/easy-coding-standard/config/common.yml' }
+
+parameters:
+    exclude_checkers:
+        - 'PhpCsFixer\Fixer\ArrayNotation\TrailingCommaInMultilineArrayFixer'
+        - 'PhpCsFixer\Fixer\CastNotation\CastSpacesFixer'
+        - 'PhpCsFixer\Fixer\ClassNotation\ClassAttributesSeparationFixer'
+        - 'PhpCsFixer\Fixer\LanguageConstruct\DeclareEqualNormalizeFixer'
+        - 'PhpCsFixer\Fixer\NamespaceNotation\SingleBlankLineBeforeNamespaceFixer'
+        - 'PhpCsFixer\Fixer\Operator\NotOperatorWithSuccessorSpaceFixer'
+        - 'SlevomatCodingStandard\Sniffs\Exceptions\ReferenceThrowableOnlySniff'
+        - 'SlevomatCodingStandard\Sniffs\Classes\TraitUseSpacingSniff'
+        - 'Symplify\CodingStandard\Fixer\Commenting\RemoveUselessDocBlockFixer'
+        - 'Symplify\CodingStandard\Fixer\Strict\BlankLineAfterStrictTypesFixer'
