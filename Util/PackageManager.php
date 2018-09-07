@@ -100,6 +100,16 @@ class PackageManager
 
     /**
      * @param string $package
+     *
+     * @return bool
+     */
+    public function exists($package): bool
+    {
+        return $this->filesystem->exists($this->targetPath . $package);
+    }
+
+    /**
+     * @param string $package
      */
     private function configurePackage(string $package): void
     {

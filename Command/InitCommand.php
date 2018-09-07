@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use function count;
 use function in_array;
@@ -66,6 +67,16 @@ class InitCommand extends Command
         $this->packageManager->addReadme();
 
         foreach ($packages as $package) {
+            if ($this->packageManager->exists($package)) {
+                $confirm = new ConfirmationQuestion(
+                    'Package "' . $package . '" has existing configuration. Do you want to override?'
+                );
+
+                if (!$io->askQuestion($confirm)) {
+                    continue;
+                }
+            }
+
             $this->packageManager->addPackage($package);
         }
 
