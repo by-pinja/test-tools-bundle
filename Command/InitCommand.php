@@ -105,7 +105,7 @@ class InitCommand extends Command
             $process->enableOutput();
             $process->setTimeout(null);
 
-            $process->run(function($output) use ($io) {
+            $process->run(function($type, $output) use ($io) {
                 $io->write($output);
             });
         }
