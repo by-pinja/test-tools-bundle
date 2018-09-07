@@ -32,14 +32,20 @@ class PackageManager
     private $filesystem;
 
     /**
+     * @var string
+     */
+    private $projectDir;
+
+    /**
      * PackageManager constructor.
      *
-     * @param string $targetPath
+     * @param string $projectDir
      */
-    public function __construct(string $targetPath)
+    public function __construct(string $projectDir)
     {
         $this->resourcePath = __DIR__ . '/../Resources/package/';
-        $this->targetPath = $targetPath;
+        $this->targetPath = $projectDir . '/vendor-bin/';
+        $this->projectDir = $projectDir;
         $this->filesystem = new Filesystem();
     }
 
@@ -69,6 +75,8 @@ class PackageManager
         };
 
         array_map($copy, iterator_to_array($iterator));
+
+        $this->configurePackage($package);
     }
 
     /**
@@ -77,5 +85,32 @@ class PackageManager
     public function addReadme(): void
     {
         $this->filesystem->copy($this->resourcePath . '/README.md', $this->targetPath . '/README.md');
+        $this->filesystem->copy(
+            $this->resourcePath . '/README.md',
+            $this->targetPath . '/README.md'
+        );
+    }
+
+    /**
+     * @param string $package
+     */
+    private function configurePackage(string $package): void
+    {
+        $configDir = $this->resourcePath . $package . '/config/';
+
+        if (!$this->filesystem->exists($configDir)) {
+            return;
+        }
+
+        $iterator = (new Finder())->files()->ignoreDotFiles(false)->in($configDir);
+
+        $copy = function (SplFileInfo $file) use ($configDir) {
+            $this->filesystem->copy(
+                $configDir . $file->getFilename(),
+                $this->projectDir . $file->getFilename()
+            );
+        };
+
+        array_map($copy, iterator_to_array($iterator));
     }
 }
