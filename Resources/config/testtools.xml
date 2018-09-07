@@ -10,6 +10,7 @@
         <service id="test_tools.command.init" class="Protacon\Bundle\TestToolsBundle\Command\InitCommand">
             <argument type="service" id="test_tools.util.composer_manager"/>
             <argument type="service" id="test_tools.util.package_manager"/>
+            <argument>%kernel.project_dir%</argument>
             <tag name="console.command" command="test-tools:init" />
         </service>
 
