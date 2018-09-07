@@ -11,6 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Process\Process;
 use function count;
 use function in_array;
 use function array_merge;
@@ -34,14 +35,20 @@ class InitCommand extends Command
     private $composerManager;
 
     /**
+     * @var string
+     */
+    private $projectDir;
+
+    /**
      * @inheritdoc
      */
-    public function __construct(ComposerManager $composerManager, PackageManager $packageManager)
+    public function __construct(ComposerManager $composerManager, PackageManager $packageManager, string $projectDir)
     {
         parent::__construct();
 
         $this->packageManager = $packageManager;
         $this->composerManager = $composerManager;
+        $this->projectDir = $projectDir;
     }
 
     /**
@@ -81,6 +88,26 @@ class InitCommand extends Command
         }
 
         $io->success(count($packages) . ' packages added. Refer to vendor-bin/{package}/README.md to learn more');
+
+        $question = new ConfirmationQuestion('Do you want to install packages?');
+
+        if ($io->askQuestion($question)) {
+            $command = [
+                'cd',
+                $this->projectDir,
+                '&&',
+                'composer',
+                'run-script',
+                'vendor-bin-install',
+            ];
+
+            $process = new Process(implode(' ', $command));
+            $process->enableOutput();
+            $process->setTimeout(null);
+            $process->run();
+
+            $io->write($process->getOutput());
+        }
 
         return null;
     }
