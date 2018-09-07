@@ -54,7 +54,7 @@ class CheckCommand extends Command
      */
     protected function configure()
     {
-        // TODO
+        $this->setDescription('Check outdated vendor dependencies');
     }
 
     /**
