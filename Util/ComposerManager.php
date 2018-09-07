@@ -1,11 +1,18 @@
 <?php
+declare(strict_types = 1);
 
 namespace Protacon\Bundle\TestToolsBundle\Util;
 
+use RuntimeException;
 use function in_array;
 use function json_decode;
 use function str_replace;
 
+/**
+ * Class ComposerManager
+ *
+ * @package Protacon\Bundle\TestToolsBundle\Util
+ */
 class ComposerManager
 {
     /**
@@ -54,8 +61,17 @@ class ComposerManager
         file_put_contents($composerFile, str_replace('\/', '/', json_encode($data, JSON_PRETTY_PRINT)));
     }
 
+    /**
+     * @return string
+     */
     private function getComposerFile(): string
     {
-        return $this->projectDir . DIRECTORY_SEPARATOR . 'composer.json';
+        $composerFile = $this->projectDir . DIRECTORY_SEPARATOR . 'composer.json';
+
+        if (!file_exists($composerFile)) {
+            throw new RuntimeException('Composer file not found from \''  . $composerFile . '\'');
+        }
+
+        return $composerFile;
     }
 }

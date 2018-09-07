@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Protacon\Bundle\TestToolsBundle\Command;
 
@@ -27,8 +28,18 @@ use function sprintf;
 use function str_replace;
 use function wordwrap;
 
+/**
+ * Class CheckCommand
+ *
+ * @package Protacon\Bundle\TestToolsBundle\Command
+ */
 class CheckCommand extends Command
 {
+    /**
+     * @var string The default command name
+     */
+    static public $defaultName = 'test-tools:check';
+
     /**
      * @var string
      */
@@ -62,7 +73,10 @@ class CheckCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->io = new SymfonyStyle($input, $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output);
+        $this->io = new SymfonyStyle(
+            $input,
+            $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output
+        );
 
         $directories = is_dir($this->projectDir . DIRECTORY_SEPARATOR . 'vendor-bin')
             ? $this->getNamespaceDirectories()
