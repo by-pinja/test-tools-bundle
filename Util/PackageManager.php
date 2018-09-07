@@ -54,16 +54,10 @@ class PackageManager
      */
     public function listPackages(): array
     {
-        $finder = (new Finder())->directories()->depth(0)->in($this->resourcePath);
-
-        $packages = [];
-
-        foreach ($finder as $directory) {
-            /** @var SplFileInfo $directory */
-            $packages[] = $directory->getFilename();
-        }
-
-        return $packages;
+        return array_map(
+            function (SplFileInfo $directory) { return $directory->getFilename(); },
+            iterator_to_array((new Finder())->directories()->depth(0)->in($this->resourcePath))
+        );
     }
 
     /**
@@ -77,10 +71,7 @@ class PackageManager
         $iterator = (new Finder())->files()->depth(0)->ignoreDotFiles(false)->in($sourcePath);
 
         $copy = function (SplFileInfo $file) use ($sourcePath, $targetPath) {
-            $this->filesystem->copy(
-                $sourcePath . '/' . $file->getFilename(),
-                $targetPath . '/' . $file->getFilename()
-            );
+            $this->filesystem->copy($sourcePath . '/' . $file->getFilename(), $targetPath . '/' . $file->getFilename());
         };
 
         array_map($copy, iterator_to_array($iterator));
@@ -93,6 +84,7 @@ class PackageManager
      */
     public function addReadme(): void
     {
+        $this->filesystem->copy($this->resourcePath . '/README.md', $this->targetPath . '/README.md');
         $this->filesystem->copy(
             $this->resourcePath . '/README.md',
             $this->targetPath . '/README.md'
