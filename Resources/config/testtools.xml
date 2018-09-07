@@ -18,7 +18,7 @@
         </service>
 
         <service id="test_tools.util.package_manager" class="Protacon\Bundle\TestToolsBundle\Util\PackageManager">
-            <argument>%kernel.project_dir%/vendor-bin/</argument>
+            <argument>%kernel.project_dir%/</argument>
         </service>
     </services>
 </container>
