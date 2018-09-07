@@ -41,6 +41,9 @@
     "scripts": {
         "post-package-install": [
             "Protacon\\Bundle\\TestToolsBundle\\Util\\Package::postPackageInstall"
+        ],
+        "post-package-update": [
+            "Protacon\\Bundle\\TestToolsBundle\\Util\\Package::postUpdateInstall"
         ]
     },
     "suggest": {},
