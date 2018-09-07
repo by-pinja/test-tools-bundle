@@ -19,9 +19,10 @@
         "symfony/config": "^4.0",
         "symfony/console": "^4.0",
         "symfony/dependency-injection": "^4.0",
+        "symfony/finder": "^4.0",
+         "symfony/filesystem": "^4.0",
         "symfony/http-kernel": "^4.0",
-        "symfony/filesystem": "^4.0",
-        "symfony/finder": "^4.0"
+        "symfony/process": "^4.0"
     },
     "require-dev": {},
     "autoload": {
@@ -30,8 +31,13 @@
             "/Tests/"
         ]
     },
-    "suggest": {
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
     },
+    "suggest": {},
     "minimum-stability": "stable",
     "extra": {}
 }
