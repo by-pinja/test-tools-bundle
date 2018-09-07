@@ -206,7 +206,7 @@ class CheckCommand extends Command
         $process->enableOutput();
         $process->run();
 
-        if (!empty($process->getErrorOutput())) {
+        if (!empty($process->getErrorOutput()) && ($process->getExitCode() === 0 || $process->getExitCode() === null)) {
             $message = sprintf(
                 "Running command '%s' failed with error message:\n%s",
                 implode(' ', $command),
