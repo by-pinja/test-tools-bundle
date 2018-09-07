@@ -6,7 +6,14 @@ namespace Protacon\Bundle\TestToolsBundle\Util;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use function array_map;
+use function iterator_to_array;
 
+/**
+ * Class PackageManager
+ *
+ * @package Protacon\Bundle\TestToolsBundle\Util
+ */
 class PackageManager
 {
     /**
@@ -25,11 +32,6 @@ class PackageManager
     private $filesystem;
 
     /**
-     * @var Finder
-     */
-    private $finder;
-
-    /**
      * PackageManager constructor.
      *
      * @param string $targetPath
@@ -39,7 +41,6 @@ class PackageManager
         $this->resourcePath = __DIR__ . '/../Resources/package/';
         $this->targetPath = $targetPath;
         $this->filesystem = new Filesystem();
-        $this->finder = new Finder();
     }
 
     /**
@@ -47,7 +48,7 @@ class PackageManager
      */
     public function listPackages(): array
     {
-        $finder = $this->finder->directories()->in($this->resourcePath);
+        $finder = (new Finder())->directories()->in($this->resourcePath);
 
         $packages = [];
 
@@ -67,21 +68,20 @@ class PackageManager
         $sourcePath = $this->resourcePath . $package;
         $targetPath = $this->targetPath . $package;
 
-        $this->filesystem->mkdir($targetPath, 0777);
+        $iterator = (new Finder())->files()->ignoreDotFiles(false)->in($sourcePath);
 
-        $this->filesystem->copy($sourcePath . '/composer.json', $targetPath . '/composer.json');
-        $this->filesystem->copy($sourcePath . '/.gitignore', $targetPath . '/.gitignore');
+        $copy = function (SplFileInfo $file) use ($sourcePath, $targetPath) {
+            $this->filesystem->copy($sourcePath . '/' . $file->getFilename(), $targetPath . '/' . $file->getFilename());
+        };
+
+        array_map($copy, iterator_to_array($iterator));
     }
 
     /**
      * @return void
      */
-    public function makeTargetDirectory(): void
+    public function addReadme(): void
     {
-        if ($this->filesystem->exists($this->targetPath)) {
-            return;
-        }
-
-        $this->filesystem->mkdir($this->targetPath, 0777);
+        $this->filesystem->copy($this->resourcePath . '/README.md', $this->targetPath . '/README.md');
     }
 }
