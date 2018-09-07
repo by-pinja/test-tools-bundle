@@ -19,6 +19,7 @@ use function array_unshift;
 use function basename;
 use function count;
 use function implode;
+use function is_dir;
 use function iterator_to_array;
 use function preg_match_all;
 use function sort;
@@ -63,7 +64,9 @@ class CheckCommand extends Command
     {
         $this->io = new SymfonyStyle($input, $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output);
 
-        $directories = $this->getNamespaceDirectories();
+        $directories = is_dir($this->projectDir . DIRECTORY_SEPARATOR . 'vendor-bin')
+            ? $this->getNamespaceDirectories()
+            : [];
 
         array_unshift($directories, $this->projectDir);
 
