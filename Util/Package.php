@@ -2,12 +2,13 @@
 
 namespace Protacon\Bundle\TestToolsBundle\Util;
 
-use Composer\Installer\PackageEvent;
+use Composer\Script\PackageEvent;
 
 class Package
 {
-    public static function postUpdate(PackageEvent $event)
+    public static function postPackageInstall(PackageEvent $event)
     {
+
         die('jeee');
     }
 }

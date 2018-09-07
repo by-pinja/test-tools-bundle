@@ -39,8 +39,8 @@
         "sort-packages": true
     },
     "scripts": {
-        "post-package-update": [
-            "Protacon\\Bundle\\TestToolsBundle\\Util\\Package::postUpdate"
+        "post-package-install": [
+            "Protacon\\Bundle\\TestToolsBundle\\Util\\Package::postPackageInstall"
         ]
     },
     "suggest": {},
