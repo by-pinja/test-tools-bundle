@@ -48,13 +48,13 @@ class InitCommand extends Command
         $io = new SymfonyStyle($input, $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output);
 
         $packages = $this->packageManager->listPackages();
-        $this->packageManager->makeTargetDirectory();
+        $this->packageManager->addReadme();
 
         foreach ($packages as $package) {
             $this->packageManager->addPackage($package);
         }
 
-        $io->success(count($packages) . ' packages added');
+        $io->success(count($packages) . ' packages added. Refer to vendor-bin/{package}/README.md to learn more');
 
         return null;
     }
