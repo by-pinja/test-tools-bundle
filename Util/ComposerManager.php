@@ -3,6 +3,7 @@
 namespace Protacon\Bundle\TestToolsBundle\Util;
 
 use function json_decode;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ComposerManager
 {
@@ -19,10 +20,10 @@ class ComposerManager
         $this->projectDir = $projectDir;
     }
 
-    public function initialize()
+    public function initialize(SymfonyStyle $io)
     {
         $data = json_decode($this->projectDir . DIRECTORY_SEPARATOR . 'composer.json');
 
-        print_r($data);
+        $io->comment($data);
     }
 }
