@@ -12,6 +12,7 @@
         </service>
 
         <service id="test_tools.command.check" class="Protacon\Bundle\TestToolsBundle\Command\CheckCommand">
+            <argument>%kernel.project_dir%</argument>
             <tag name="console.command" command="test-tools:check" />
         </service>
     </services>
