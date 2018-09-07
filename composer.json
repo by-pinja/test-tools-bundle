@@ -38,6 +38,11 @@
         },
         "sort-packages": true
     },
+    "scripts": {
+        "post-package-update": [
+            "Protacon\\Bundle\\TestToolsBundle\\Util\\Package::postUpdate"
+        ]
+    },
     "suggest": {},
     "minimum-stability": "stable",
     "extra": {}
