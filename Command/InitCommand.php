@@ -104,9 +104,10 @@ class InitCommand extends Command
             $process = new Process(implode(' ', $command));
             $process->enableOutput();
             $process->setTimeout(null);
-            $process->run();
 
-            $io->write($process->getOutput());
+            $process->run(function($output) use ($io) {
+                $io->write($output);
+            });
         }
 
         return null;
