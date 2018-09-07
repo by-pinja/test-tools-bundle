@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <defaults public="false" />
+
+        <service id="test_tools.command.init" class="Protacon\Bundle\TestToolsBundle\Command\InitCommand">
+            <tag name="console.command" command="test-tools:init" />
+        </service>
+
+        <service id="test_tools.command.check" class="Protacon\Bundle\TestToolsBundle\Command\CheckCommand">
+            <tag name="console.command" command="test-tools:check" />
+        </service>
+    </services>
+</container>
