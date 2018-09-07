@@ -8,6 +8,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use function array_map;
 use function iterator_to_array;
+use function count;
 
 /**
  * Class PackageManager
@@ -54,10 +55,16 @@ class PackageManager
      */
     public function listPackages(): array
     {
-        return array_map(
-            function (SplFileInfo $directory) { return $directory->getFilename(); },
+        $packages = [];
+
+        array_map(
+            function (SplFileInfo $directory) use (&$packages) {
+                $packages[$directory->getFilename()] = $this->getPackageDescription($directory->getFilename());
+            },
             iterator_to_array((new Finder())->directories()->depth(0)->in($this->resourcePath))
         );
+
+        return $packages;
     }
 
     /**
@@ -112,5 +119,26 @@ class PackageManager
         };
 
         array_map($copy, iterator_to_array($iterator));
+    }
+
+    /**
+     * @param string $package
+     *
+     * @return string
+     */
+    private function getPackageDescription(string $package): string
+    {
+        $readmes = (new Finder())->files()->in($this->resourcePath . $package)->name('README.md');
+
+        foreach ($readmes as $readme) {
+            /** @var SplFileInfo $readme */
+            preg_match('/#{1,3}\s' . $package . '\s+([^\n]*)/mi', $readme->getContents(), $matches);
+
+            if (count($matches) === 2) {
+                return $matches[1];
+            }
+        }
+
+        return '';
     }
 }
