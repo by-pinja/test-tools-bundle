@@ -69,6 +69,15 @@ by following command:
 
 Or you could easily configure your IDE to run those for you.
 
+### Environment
+
+Bundle provides a Dockerfile and docker-compose configuration to develop the bundle in the container with the all tools necessary installed
+
+````bash
+docker-compose up -d
+docker-compose exec app /bin/bash
+````
+
 ## Authors
 
 [Tarmo Leppänen](https://github.com/tarlepp)
