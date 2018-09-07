@@ -8,8 +8,13 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use function count;
+use function in_array;
+use function array_merge;
+use function array_keys;
 
 /**
  * Class InitCommand
@@ -44,7 +49,7 @@ class InitCommand extends Command
      */
     protected function configure()
     {
-        // TODO
+        $this->setDescription('Initialize test tools');
     }
 
     /**
@@ -57,15 +62,55 @@ class InitCommand extends Command
         // Make sure that main composer.json contains all needed scripts
         $this->composerManager->initialize();
 
-        $packages = $this->packageManager->listPackages();
+        $packages = $this->promptPackages($io);
+
         $this->packageManager->addReadme();
 
         foreach ($packages as $package) {
+            if ($this->packageManager->exists($package)) {
+                $confirm = new ConfirmationQuestion(
+                    'Package "' . $package . '" has existing configuration. Do you want to override?'
+                );
+
+                if (!$io->askQuestion($confirm)) {
+                    continue;
+                }
+            }
+
             $this->packageManager->addPackage($package);
         }
 
         $io->success(count($packages) . ' packages added. Refer to vendor-bin/{package}/README.md to learn more');
 
         return null;
+    }
+
+    /**
+     * @param SymfonyStyle $io
+     *
+     * @return array
+     */
+    private function promptPackages(SymfonyStyle $io): array
+    {
+        $packages = $this->packageManager->listPackages();
+
+        $choices = array_merge($packages, array('all' => 'Configure all above'));
+
+        $question = new ChoiceQuestion(
+            'Which packages you would like to configure?',
+            $choices,
+            'all'
+        );
+
+        $question->setMultiselect(true);
+        $question->setAutocompleterValues(array_keys($choices));
+
+        $result = $io->askQuestion($question);
+
+        if (in_array('all', $result, true)) {
+            $result = array_keys($packages);
+        }
+
+        return $result;
     }
 }
