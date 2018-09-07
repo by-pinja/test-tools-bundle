@@ -44,6 +44,12 @@
         ],
         "post-package-update": [
             "Protacon\\Bundle\\TestToolsBundle\\Util\\Package::postUpdateInstall"
+        ],
+        "post-install-cmd": [
+            "Protacon\\Bundle\\TestToolsBundle\\Util\\Package::postInstall"
+        ],
+        "post-update-cmd": [
+            "Protacon\\Bundle\\TestToolsBundle\\Util\\Package::postUpdate"
         ]
     },
     "suggest": {},
