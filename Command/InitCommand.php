@@ -54,6 +54,7 @@ class InitCommand extends Command
     {
         $io = new SymfonyStyle($input, $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output);
 
+        // Make sure that main composer.json contains all needed scripts
         $this->composerManager->initialize();
 
         $packages = $this->packageManager->listPackages();
