@@ -2,26 +2,38 @@
 
 namespace Protacon\Bundle\TestToolsBundle\Command;
 
+use Protacon\Bundle\TestToolsBundle\Util\PackageManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use function count;
 
+/**
+ * Class InitCommand
+ *
+ * @package Protacon\Bundle\TestToolsBundle\Command
+ */
 class InitCommand extends Command
 {
     /**
-     * {@inheritdoc}
+     * @var PackageManager
      */
-    public function __construct()
+    private $packageManager;
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct(PackageManager $packageManager)
     {
         parent::__construct();
 
-        // TODO
+        $this->packageManager = $packageManager;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function configure()
     {
@@ -29,14 +41,20 @@ class InitCommand extends Command
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output);
 
-        // TODO
-        $io->error('not implemented');
+        $packages = $this->packageManager->listPackages();
+        $this->packageManager->makeTargetDirectory();
+
+        foreach ($packages as $package) {
+            $this->packageManager->addPackage($package);
+        }
+
+        $io->success(count($packages) . ' packages added');
 
         return null;
     }
