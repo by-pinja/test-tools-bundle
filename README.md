@@ -36,6 +36,15 @@ You can add this library as a dependency to your project using following command
 composer require protacon/test-tools-bundle
 ```
 
+## Usage
+
+Bundle exposes few Symfony commands in the `test-tools` namespace you can utilize
+
+```bash
+./bin/console test-tools:init    Initialize test tools
+./bin/console test-tools:check   Check outdated vendor dependencies
+```
+
 ## Development
 
 * [PSR-2: Coding Style Guide](http://www.php-fig.org/psr/psr-2/)

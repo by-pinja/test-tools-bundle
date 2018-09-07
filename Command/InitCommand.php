@@ -89,7 +89,7 @@ class InitCommand extends Command
 
         $io->success(count($packages) . ' packages added. Refer to vendor-bin/{package}/README.md to learn more');
 
-        $question = new ConfirmationQuestion('Do you want to install packages?');
+        $question = new ConfirmationQuestion('Do you want to install packages now?');
 
         if ($io->askQuestion($question)) {
             $command = [
@@ -105,7 +105,7 @@ class InitCommand extends Command
             $process->enableOutput();
             $process->setTimeout(null);
 
-            $process->run(function($output) use ($io) {
+            $process->run(function($type, $output) use ($io) {
                 $io->write($output);
             });
         }
