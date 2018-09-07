@@ -4,6 +4,7 @@ namespace Protacon\Bundle\TestToolsBundle\Util;
 
 use function in_array;
 use function json_decode;
+use function str_replace;
 
 class ComposerManager
 {
@@ -50,7 +51,7 @@ class ComposerManager
             $data['scripts']['post-update-cmd'][] = '@composer dump-autoload';
         }
 
-        file_put_contents($composerFile, json_encode($data, JSON_PRETTY_PRINT));
+        file_put_contents($composerFile, str_replace('\/', '/', json_encode($data, JSON_PRETTY_PRINT)));
     }
 
     private function getComposerFile(): string
