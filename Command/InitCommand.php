@@ -2,6 +2,7 @@
 
 namespace Protacon\Bundle\TestToolsBundle\Command;
 
+use Protacon\Bundle\TestToolsBundle\Util\ComposerManager;
 use Protacon\Bundle\TestToolsBundle\Util\PackageManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,13 +28,19 @@ class InitCommand extends Command
     private $packageManager;
 
     /**
+     * @var ComposerManager
+     */
+    private $composerManager;
+
+    /**
      * @inheritdoc
      */
-    public function __construct(PackageManager $packageManager)
+    public function __construct(ComposerManager $composerManager, PackageManager $packageManager)
     {
         parent::__construct();
 
         $this->packageManager = $packageManager;
+        $this->composerManager = $composerManager;
     }
 
     /**
@@ -50,6 +57,9 @@ class InitCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output);
+
+        // Make sure that main composer.json contains all needed scripts
+        $this->composerManager->initialize();
 
         $packages = $this->promptPackages($io);
 
