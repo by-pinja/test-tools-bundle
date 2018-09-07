@@ -1,0 +1,35 @@
+{
+    "name": "protacon/test-tools-bundle",
+    "description": "Testing and static analysis tools bundle for Symfony projects",
+    "type": "symfony-bundle",
+    "homepage": "https://www.protacon.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tarmo Leppänen",
+            "email": "tarmo.leppanen@protacon.com"
+        },
+        {
+            "name": "Atte Tarvainen",
+            "email": "atte.tarvainen@protacon.com"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "symfony/config": "^4.0",
+        "symfony/console": "^4.0",
+        "symfony/dependency-injection": "^4.0",
+        "symfony/http-kernel": "^4.0"
+    },
+    "require-dev": {},
+    "autoload": {
+        "psr-4": { "Protacon\\Bundle\\TestToolsBundle\\": "" },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "suggest": {
+    },
+    "minimum-stability": "stable",
+    "extra": {}
+}
