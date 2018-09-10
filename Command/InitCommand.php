@@ -29,7 +29,7 @@ class InitCommand extends Command
     /**
      * @var string The default command name
      */
-    static public $defaultName = 'test-tools:check';
+    public static $defaultName = 'test-tools:check';
 
     /**
      * @var PackageManager
