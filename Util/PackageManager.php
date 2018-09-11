@@ -51,7 +51,7 @@ class PackageManager
     }
 
     /**
-     * @return array
+     * @return array|array<string, string>
      */
     public function listPackages(): array
     {
@@ -75,27 +75,23 @@ class PackageManager
         $sourcePath = $this->resourcePath . $package;
         $targetPath = $this->targetPath . $package;
 
-        $iterator = (new Finder())->files()->depth(0)->ignoreDotFiles(false)->in($sourcePath);
+        $finder = (new Finder())->files()->depth(0)->ignoreDotFiles(false)->in($sourcePath);
 
-        $copy = function (SplFileInfo $file) use ($sourcePath, $targetPath) {
-            $this->filesystem->copy($sourcePath . '/' . $file->getFilename(), $targetPath . '/' . $file->getFilename());
+        /**
+         * Closure to copy all specified package files to current project
+         *
+         * @param \Symfony\Component\Finder\SplFileInfo $file
+         */
+        $iterator = function (SplFileInfo $file) use ($sourcePath, $targetPath): void {
+            $this->filesystem->copy(
+                $sourcePath . DIRECTORY_SEPARATOR . $file->getFilename(),
+                $targetPath . DIRECTORY_SEPARATOR . $file->getFilename()
+            );
         };
 
-        array_map($copy, iterator_to_array($iterator));
+        array_map($iterator, iterator_to_array($finder));
 
         $this->configurePackage($package);
-    }
-
-    /**
-     * @return void
-     */
-    public function addReadme(): void
-    {
-        $this->filesystem->copy($this->resourcePath . '/README.md', $this->targetPath . '/README.md');
-        $this->filesystem->copy(
-            $this->resourcePath . '/README.md',
-            $this->targetPath . '/README.md'
-        );
     }
 
     /**
@@ -103,7 +99,7 @@ class PackageManager
      *
      * @return bool
      */
-    public function exists($package): bool
+    public function exists(string $package): bool
     {
         return $this->filesystem->exists($this->targetPath . $package);
     }
@@ -119,16 +115,18 @@ class PackageManager
             return;
         }
 
-        $iterator = (new Finder())->files()->ignoreDotFiles(false)->in($configDir);
+        $finder = (new Finder())->files()->depth(0)->ignoreDotFiles(false)->in($configDir);
 
-        $copy = function (SplFileInfo $file) use ($configDir) {
-            $this->filesystem->copy(
-                $configDir . $file->getFilename(),
-                $this->projectDir . $file->getFilename()
-            );
+        /**
+         * Closure to copy specified package config file(s) to current project root.
+         *
+         * @param SplFileInfo $file
+         */
+        $iterator = function (SplFileInfo $file) use ($configDir): void {
+            $this->filesystem->copy($configDir . $file->getFilename(),$this->projectDir . $file->getFilename());
         };
 
-        array_map($copy, iterator_to_array($iterator));
+        array_map($iterator, iterator_to_array($finder));
     }
 
     /**

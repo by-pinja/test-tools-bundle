@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Protacon\Bundle\TestToolsBundle\Command;
 
@@ -12,10 +13,11 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Process;
+use function array_filter;
+use function array_keys;
+use function array_merge;
 use function count;
 use function in_array;
-use function array_merge;
-use function array_keys;
 
 /**
  * Class InitCommand
@@ -24,6 +26,11 @@ use function array_keys;
  */
 class InitCommand extends Command
 {
+    /**
+     * @var string The default command name
+     */
+    public static $defaultName = 'test-tools:check';
+
     /**
      * @var PackageManager
      */
@@ -40,7 +47,16 @@ class InitCommand extends Command
     private $projectDir;
 
     /**
-     * @inheritdoc
+     * @var SymfonyStyle
+     */
+    private $io;
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param ComposerManager $composerManager
+     * @param PackageManager  $packageManager
+     * @param string          $projectDir
      */
     public function __construct(ComposerManager $composerManager, PackageManager $packageManager, string $projectDir)
     {
@@ -52,7 +68,7 @@ class InitCommand extends Command
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -60,38 +76,67 @@ class InitCommand extends Command
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new SymfonyStyle($input, $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output);
+        $this->io = new SymfonyStyle(
+            $input,
+            $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output
+        );
 
         // Make sure that main composer.json contains all needed scripts
         $this->composerManager->initialize();
 
-        $packages = $this->promptPackages($io);
+        // Add packages
+        $packages = $this->addPackages();
 
-        $this->packageManager->addReadme();
+        // Make install if packages has been add
+        if (count($packages) > 0) {
+            $this->makeInstall();
+        }
 
-        foreach ($packages as $package) {
+        $this->io->success(count($packages) . ' packages added. Refer to vendor-bin/{package}/README.md to learn more');
+
+        return null;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function addPackages(): array
+    {
+        /**
+         * Closure to add single package to current project
+         *
+         * @param string $package
+         *
+         * @return string|null
+         */
+        $addPackage = function (string $package): ?string {
             if ($this->packageManager->exists($package)) {
                 $confirm = new ConfirmationQuestion(
                     'Package "' . $package . '" has existing configuration. Do you want to override?'
                 );
 
-                if (!$io->askQuestion($confirm)) {
-                    continue;
+                if (!$this->io->askQuestion($confirm)) {
+                    return null;
                 }
             }
 
             $this->packageManager->addPackage($package);
-        }
 
-        $io->success(count($packages) . ' packages added. Refer to vendor-bin/{package}/README.md to learn more');
+            return $package;
+        };
 
+        return array_filter(array_map($addPackage, $this->promptPackages()));
+    }
+
+    private function makeInstall(): void
+    {
         $question = new ConfirmationQuestion('Do you want to install packages now?');
 
-        if ($io->askQuestion($question)) {
+        if ($this->io->askQuestion($question)) {
             $command = [
                 'cd',
                 $this->projectDir,
@@ -105,24 +150,22 @@ class InitCommand extends Command
             $process->enableOutput();
             $process->setTimeout(null);
 
-            $process->run(function($type, $output) use ($io) {
-                $io->write($output);
-            });
+            $process->run(
+                function ($type, $output): void {
+                    $this->io->write($output);
+                }
+            );
         }
-
-        return null;
     }
 
     /**
-     * @param SymfonyStyle $io
-     *
-     * @return array
+     * @return string[]
      */
-    private function promptPackages(SymfonyStyle $io): array
+    private function promptPackages(): array
     {
         $packages = $this->packageManager->listPackages();
 
-        $choices = array_merge($packages, array('all' => 'Configure all above'));
+        $choices = array_merge($packages, ['all' => 'Configure all above']);
 
         $question = new ChoiceQuestion(
             'Which packages you would like to configure?',
@@ -133,7 +176,7 @@ class InitCommand extends Command
         $question->setMultiselect(true);
         $question->setAutocompleterValues(array_keys($choices));
 
-        $result = $io->askQuestion($question);
+        $result = $this->io->askQuestion($question);
 
         if (in_array('all', $result, true)) {
             $result = array_keys($packages);
