@@ -22,7 +22,6 @@ use function count;
 use function implode;
 use function is_dir;
 use function iterator_to_array;
-use function preg_match_all;
 use function sort;
 use function sprintf;
 use function str_replace;
@@ -159,35 +158,29 @@ class CheckCommand extends Command
          * @param string $directory
          */
         $iterator = function (string $directory) use ($progressBar, &$rows): void {
-            $process = $this->processNamespacePath($directory);
+            foreach ($this->processNamespacePath($directory) as $row => $data) {
+                $title = '';
+                $relativePath = '';
 
-            if (!empty($process)) {
-                $libraries = $this->parseLibraries($process);
-
-                foreach ($libraries as $row => $data) {
-                    $title = '';
-                    $relativePath = '';
-
-                    // First row of current library
-                    if ($row === 0) {
-                        // We want to add table separator between different libraries
-                        if (count($rows) > 0) {
-                            $rows[] = new TableSeparator();
-                        }
-
-                        $title = basename($directory);
-                        $relativePath = str_replace($this->projectDir, '', $directory) . '/composer.json';
+                // First row of current library
+                if ($row === 0) {
+                    // We want to add table separator between different libraries
+                    if (count($rows) > 0) {
+                        $rows[] = new TableSeparator();
                     }
 
-                    $rows[] = [
-                        $title,
-                        $relativePath,
-                        $data[1],
-                        wordwrap($data[4], 60),
-                        $data[2],
-                        $data[3],
-                    ];
+                    $title = basename($directory);
+                    $relativePath = str_replace($this->projectDir, '', $directory) . '/composer.json';
                 }
+
+                $rows[] = [
+                    $title,
+                    $relativePath,
+                    $data->name,
+                    wordwrap($data->description, 60),
+                    $data->version,
+                    $data->latest,
+                ];
             }
 
             $progressBar->advance();
@@ -203,9 +196,9 @@ class CheckCommand extends Command
      *
      * @param string $path
      *
-     * @return string
+     * @return array
      */
-    private function processNamespacePath(string $path): string
+    private function processNamespacePath(string $path): array
     {
         $command = [
             'cd',
@@ -213,7 +206,9 @@ class CheckCommand extends Command
             '&&',
             'composer',
             'outdated',
-            '-D'
+            '-D',
+            '-f',
+            'json',
         ];
 
         $process = new Process(implode(' ', $command));
@@ -232,7 +227,7 @@ class CheckCommand extends Command
             throw new RuntimeException($message);
         }
 
-        return $process->getOutput();
+        return json_decode($process->getOutput())->installed ?? [];
     }
 
     /**
@@ -259,24 +254,5 @@ class CheckCommand extends Command
         $progress->setMessage($message);
 
         return $progress;
-    }
-
-    /**
-     * Method to parse 'composer outdated -D' command results.
-     *
-     * @param string $process
-     *
-     * @return array|string[]|array<int, string>
-     */
-    private function parseLibraries(string $process): array
-    {
-        preg_match_all(
-            '#([a-z_\-\/]+)\s+(v?[\d]+.[\d]+.[\d]+)\s+!\s(v?[\d]+.[\d]+.[\d]+)\s+(.*)#m',
-            $process,
-            $matches,
-            PREG_SET_ORDER
-        );
-
-        return $matches;
     }
 }
