@@ -2,7 +2,7 @@
 
 This is part of [protacon/test-tools-bundle](https://packagist.org/packages/protacon/test-tools-bundle)
 
-## php-coversall
+## php-coveralls
 
 PHP client library for [Coveralls](https://coveralls.io).
 
@@ -10,11 +10,7 @@ PHP client library for [Coveralls](https://coveralls.io).
 
 ## Usage
 
-To run this tool use following command:
-
-```bash
-./vendor/bin/ecs check src
-```
+See the [docs](https://docs.coveralls.io/php)
 
 ## Configuration
 
