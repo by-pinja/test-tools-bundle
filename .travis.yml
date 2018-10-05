@@ -1,0 +1,39 @@
+language: php
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+
+git:
+  depth: 1
+
+services:
+
+php:
+  - 7.1
+  - 7.2
+  - master
+  - nightly
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: master
+    - php: nightly
+
+before_install:
+  - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi;
+
+install:
+  - composer install
+
+before_script:
+  - php --version
+  - composer --version
+
+script:
+  - echo "We need to make something with TravisCI...";
+
+after_success:
+
+after_failure:
