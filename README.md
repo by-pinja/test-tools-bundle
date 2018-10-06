@@ -94,8 +94,8 @@ docker-compose exec app /bin/bash
 
 ## Authors
 
-[Tarmo Leppänen](https://github.com/tarlepp)
-[Atte Tarvainen](https://github.com/tarvainen)
+- [Atte Tarvainen](https://github.com/tarvainen)
+- [Tarmo Leppänen](https://github.com/tarlepp)
 
 ## License
 
