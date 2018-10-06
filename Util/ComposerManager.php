@@ -4,8 +4,15 @@ declare(strict_types = 1);
 namespace Protacon\Bundle\TestToolsBundle\Util;
 
 use RuntimeException;
+use function array_key_exists;
+use function array_unshift;
+use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
 use function in_array;
+use function is_readable;
 use function json_decode;
+use function json_encode;
 use function str_replace;
 
 /**
@@ -38,13 +45,13 @@ class ComposerManager
         $write = false;
 
         if (!array_key_exists('vendor-bin-install', $data['scripts'])) {
-            $data['scripts']['vendor-bin-install'] = '@composer bin all install --ansi';
+            $data['scripts']['vendor-bin-install'] = 'if test -d vendor/protacon/test-tools-bundle; then @composer bin all install --ansi; fi';
 
             $write = true;
         }
 
         if (!array_key_exists('vendor-bin-update', $data['scripts'])) {
-            $data['scripts']['vendor-bin-update'] = '@composer bin all update --ansi';
+            $data['scripts']['vendor-bin-update'] = 'if test -d vendor/protacon/test-tools-bundle; then @composer bin all update --ansi; fi';
 
             $write = true;
         }
