@@ -1,4 +1,8 @@
 # What is this
+
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![Total Downloads](https://poser.pugx.org/protacon/test-tools-bundle/downloads)](https://packagist.org/packages/protacon/test-tools-bundle)
+
 Testing and static analysis tools bundle for Symfony projects
 
 ## Table of Contents
