@@ -2,6 +2,7 @@
 
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 [![Build Status](https://travis-ci.org/protacon/test-tools-bundle.png?branch=master)](https://travis-ci.org/protacon/test-tools-bundle)
+[![Total Downloads](https://poser.pugx.org/protacon/test-tools-bundle/downloads)](https://packagist.org/packages/protacon/test-tools-bundle)
 
 Testing and static analysis tools bundle for Symfony projects
 
