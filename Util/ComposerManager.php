@@ -45,7 +45,7 @@ class ComposerManager
         $write = false;
 
         if (!array_key_exists('vendor-bin-install', $data['scripts'])) {
-            $data['scripts']['vendor-bin-install'] = 'if test -d vendor/protacon/test-tools-bundle; then @composer bin all install --ansi; fi';
+            $data['scripts']['vendor-bin-install'] = 'php -r \'exit(is_dir("vendor/protacon/test-tools-bundle") ? 0 : -1);\' && @composer bin all install --ansi';
 
             $write = true;
         }
