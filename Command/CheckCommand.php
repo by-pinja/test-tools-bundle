@@ -194,15 +194,12 @@ class CheckCommand extends Command
     private function processNamespacePath(string $path): string
     {
         $command = [
-            'cd',
-            $path,
-            '&&',
             'composer',
             'outdated',
             '-D'
         ];
 
-        $process = new Process(implode(' ', $command));
+        $process = new Process($command, $path);
         $process->enableOutput();
         $process->run();
 
