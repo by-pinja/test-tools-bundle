@@ -84,7 +84,7 @@ Bundle provides a Dockerfile and docker-compose configuration to develop the bun
 
 ````bash
 docker-compose up -d
-docker-compose exec app /bin/bash
+docker-compose exec app sh
 ````
 
 ## Authors
