@@ -201,9 +201,6 @@ class CheckCommand extends Command
     private function processNamespacePath(string $path): array
     {
         $command = [
-            'cd',
-            $path,
-            '&&',
             'composer',
             'outdated',
             '-D',
@@ -211,7 +208,7 @@ class CheckCommand extends Command
             'json',
         ];
 
-        $process = new Process(implode(' ', $command));
+        $process = new Process($command, $path);
         $process->enableOutput();
         $process->run();
 

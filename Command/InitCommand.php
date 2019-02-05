@@ -138,15 +138,12 @@ class InitCommand extends Command
 
         if ($this->io->askQuestion($question)) {
             $command = [
-                'cd',
-                $this->projectDir,
-                '&&',
                 'composer',
                 'run-script',
                 'vendor-bin-install',
             ];
 
-            $process = new Process(implode(' ', $command));
+            $process = new Process($command, $this->projectDir);
             $process->enableOutput();
             $process->setTimeout(null);
 
