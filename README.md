@@ -101,4 +101,4 @@ docker-compose exec app sh
 
 [The MIT License (MIT)](LICENSE)
 
-Copyright (c) 2018 Protacon
+Copyright (c) 2019 Protacon
